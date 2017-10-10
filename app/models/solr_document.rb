@@ -25,4 +25,46 @@ class SolrDocument
   # Do content negotiation for AF models.
 
   use_extension(Hydra::ContentNegotiation)
+
+  ### START LD4L customization
+  def oclc_organization
+    self[Solrizer.solr_name('oclc_organization')]
+  end
+
+  def oclc_organization_uri
+    self[Solrizer.solr_name('oclc_organization_uri')]
+  end
+
+  def oclc_person
+    self[Solrizer.solr_name('oclc_person')]
+  end
+
+  def oclc_person_uri
+    self[Solrizer.solr_name('oclc_person_uri')]
+  end
+
+  def agrovoc_keyword
+    self[Solrizer.solr_name('agrovoc_keyword')]
+  end
+
+  def agrovoc_keyword_uri
+    self[Solrizer.solr_name('agrovoc_keyword_uri')]
+  end
+
+  def agrovoc_keyword_fr
+    self[Solrizer.solr_name('agrovoc_keyword_fr')]
+  end
+
+  def agrovoc_keyword_fr_uri
+    self[Solrizer.solr_name('agrovoc_keyword_fr_uri')]
+  end
+
+  def loc_name
+    self[Solrizer.solr_name('loc_name')]
+  end
+
+  def loc_name_uri
+    self[Solrizer.solr_name('loc_name_uri')]
+  end
+  ### END LD4L customization
 end

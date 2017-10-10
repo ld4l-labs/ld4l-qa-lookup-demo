@@ -10,6 +10,41 @@ class DemoWork < ActiveFedora::Base
 
   self.human_readable_type = 'Demo Work'
 
+  ### START LD4L customization
+  property :oclc_organization_uri, predicate: ::RDF::URI.new('http://www.example.org/ns#oclc_org'), multiple: true
+  property :oclc_organization, predicate: ::RDF::URI.new('http://www.example.org/ns#oclc_org_label'), multiple: true do |index|
+    index.as :stored_searchable, :facetable
+  end
+
+  property :oclc_person_uri, predicate: ::RDF::URI.new('http://www.example.org/ns#oclc_person'), multiple: true do |index|
+    index.as :stored_searchable
+  end
+  property :oclc_person, predicate: ::RDF::URI.new('http://www.example.org/ns#oclc_person_label'), multiple: true do |index|
+    index.as :stored_searchable, :facetable
+  end
+
+  # TODO: URI probably doesn't need to be stored_searchable, but I couldn't get it to show up on the show page for the work with out this
+  property :agrovoc_keyword_uri, predicate: ::RDF::URI.new('http://www.example.org/ns#agrovoc_keyword'), multiple: true do |index|
+    index.as :stored_searchable
+  end
+  property :agrovoc_keyword, predicate: ::RDF::URI.new('http://www.example.org/ns#agrovoc_keyword_label'), multiple: true do |index|
+    index.as :stored_searchable, :facetable
+  end
+
+  # TODO: same issue as agrovoc_keyword_uri
+  property :agrovoc_keyword_fr_uri, predicate: ::RDF::URI.new('http://www.example.org/ns#agrovoc_keyword_fr'), multiple: true do |index|
+    index.as :stored_searchable
+  end
+  property :agrovoc_keyword_fr, predicate: ::RDF::URI.new('http://www.example.org/ns#agrovoc_keyword_label_fr'), multiple: true do |index|
+    index.as :stored_searchable, :facetable
+  end
+
+  property :loc_name_uri, predicate: ::RDF::URI.new('http://www.example.org/ns#loc_name'), multiple: true
+  property :loc_name, predicate: ::RDF::URI.new('http://www.example.org/ns#loc_name_label'), multiple: true do |index|
+    index.as :stored_searchable, :facetable
+  end
+  ### END LD4L customization
+
   # This must be included at the end, because it finalizes the metadata
   # schema (by adding accepts_nested_attributes)
   include ::Hyrax::BasicMetadata
