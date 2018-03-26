@@ -108,6 +108,48 @@ Hyrax.config do |config|
   # The default is true.
   config.work_requires_files = false
 
+  # Enable IIIF image service. This is required to use the
+  # UniversalViewer-ified show page
+  #
+  # If you have run the riiif generator, an embedded riiif service
+  # will be used to deliver images via IIIF. If you have not, you will
+  # need to configure the following other configuration values to work
+  # with your image server:
+  #
+  #   * iiif_image_url_builder
+  #   * iiif_info_url_builder
+  #   * iiif_image_compliance_level_uri
+  #   * iiif_image_size_default
+  #
+  # Default is false
+  # config.iiif_image_server = false
+
+  # Returns a URL that resolves to an image provided by a IIIF image server
+  config.iiif_image_url_builder = lambda do |file_id, base_url, size|
+    Riiif::Engine.routes.url_helpers.image_url(file_id, host: base_url, size: size)
+  end
+  # config.iiif_image_url_builder = lambda do |file_id, base_url, size|
+  #   "#{base_url}/downloads/#{file_id.split('/').first}"
+  # end
+
+  # Returns a URL that resolves to an info.json file provided by a IIIF image server
+  config.iiif_info_url_builder = lambda do |file_id, base_url|
+    uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url)
+    uri.sub(%r{/info\.json\Z}, '')
+  end
+  # config.iiif_info_url_builder = lambda do |_, _|
+  #   ""
+  # end
+
+  # Returns a URL that indicates your IIIF image server compliance level
+  # config.iiif_image_compliance_level_uri = 'http://iiif.io/api/image/2/level2.json'
+
+  # Returns a IIIF image size default
+  # config.iiif_image_size_default = '600,'
+
+  # Fields to display in the IIIF metadata section; default is the required fields
+  # config.iiif_metadata_fields = Hyrax::Forms::WorkForm.required_fields
+
   # Should a button with "Share my work" show on the front page to all users (even those not logged in)?
   # config.display_share_button_when_not_logged_in = true
 
@@ -177,8 +219,13 @@ Hyrax.config do |config|
   # config.lock_time_to_live = 60_000
 
   ## Do not alter unless you understand how ActiveFedora handles URI/ID translation
-  # config.translate_id_to_uri = ActiveFedora::Noid.config.translate_id_to_uri
-  # config.translate_uri_to_id = ActiveFedora::Noid.config.translate_uri_to_id
+  # config.translate_id_to_uri = lambda do |uri|
+  #                                baseparts = 2 + [(Noid::Rails::Config.template.gsub(/\.[rsz]/, '').length.to_f / 2).ceil, 4].min
+  #                                uri.to_s.sub(baseurl, '').split('/', baseparts).last
+  #                              end
+  # config.translate_uri_to_id = lambda do |id|
+  #                                "#{ActiveFedora.fedora.host}#{ActiveFedora.fedora.base_path}/#{Noid::Rails.treeify(id)}"
+  #                              end
 
   ## Fedora import/export tool
   #
@@ -198,6 +245,22 @@ Hyrax.config do |config|
   rescue Errno::ENOENT
     config.browse_everything = nil
   end
+
+  ## Whitelist all directories which can be used to ingest from the local file
+  # system.
+  #
+  # Any file, and only those, that is anywhere under one of the specified
+  # directories can be used by CreateWithRemoteFilesActor to add local files
+  # to works. Files uploaded by the user are handled separately and the
+  # temporary directory for those need not be included here.
+  #
+  # Default value includes BrowseEverything.config['file_system'][:home] if it
+  # is set, otherwise default is an empty list. You should only need to change
+  # this if you have custom ingestions using CreateWithRemoteFilesActor to
+  # ingest files from the file system that are not part of the BrowseEverything
+  # mount point.
+  #
+  # config.whitelisted_ingest_dirs = []
 end
 
 Date::DATE_FORMATS[:standard] = "%m/%d/%Y"

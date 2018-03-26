@@ -6,13 +6,14 @@ git_source(:github) do |repo_name|
 end
 
 ### START LD4L customization
+gem 'qa', github: 'samvera/questioning_authority', branch: 'min_context'
 group :development, :test do
   gem 'linkeddata'
 end
 ### END LD4L customization
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.4'
+gem 'rails', '~> 5.1.5'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use Puma as the app server
@@ -31,7 +32,7 @@ gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
+# gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -58,7 +59,8 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'hyrax', '2.0.0.beta4'
+gem 'hyrax', github: 'samvera/hyrax', branch: 'v2.1.0.beta1c_qa'
+# gem 'hyrax', '2.1.0.beta1'
 group :development, :test do
   gem 'solr_wrapper', '>= 0.3'
 end
@@ -70,4 +72,8 @@ gem 'rsolr', '>= 1.0'
 group :development, :test do
   gem 'fcrepo_wrapper'
   gem 'rspec-rails'
+  # the hyrax style guide is based on `bixby`. see `.rubocop.yml`
+  gem 'bixby', '~> 1.0.0'
 end
+
+gem 'riiif', '~> 1.1'
